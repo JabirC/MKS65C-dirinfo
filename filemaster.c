@@ -1,10 +1,4 @@
-#include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
-#include <time.h>
+#include "filemaster.h"
 
 
 char * permissions(int digit){
@@ -121,8 +115,10 @@ void stats (char * filename){
 
   char * thirdperm = permissions(mode%8);
 
+
+
   printf("-%s%s%s l ", firstperm, secondperm, thirdperm );
-  printf("%s ", sizestr);
-  printf("%s %s %d %s:%s:%s %d a.out\n", dayofweek, month, dayofmonth, hourstr, minstr, secstr, year);
+  printf("%*s ",4,  sizestr); // "*" in between print types are for aligning the print results
+  printf("%*s %*s %*d %*s:%*s:%*s %*d %s\n", 4, dayofweek, 3, month, 2, dayofmonth, 2, hourstr, 2, minstr, 2, secstr, 4, year, strrchr(filename, 47) + 1);
 
 }

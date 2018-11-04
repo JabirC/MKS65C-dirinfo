@@ -1,59 +1,69 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
+#include "filemaster.h"
 #include <dirent.h>
 #include <sys/types.h>
-#include <sys/stat.h>
-#include <stdlib.h>
-#include <time.h>
-
-
-void prnt_dir(int dirs, int files, char * dir_stream) {
-    char only_dirs[dirs];
-    char file_holder[files];
-
-    DIR * d = opendir(dir_stream);
-    struct dirent * entry;
-    struct stat duf;
-
-    entry = readdir(d);
-
-    while(entry) {
-        stat(entry->d_name, &duf);
-        printf("%o\t%s\t%s\t%i\t%s\t%s\n", duf.st_mode % 512, duf.st_uid, duf.st_gid, duf.st_size, ctime(&(duf.st_ctime)), entry->d_name);
-        entry = readdir(d);
-    }
-}
-
 
 int open_and_test(char * dir) {
-    DIR * d;
-    d = opendir(dir);
-    int dir_nums = 0;
-    int files = 0;
-    struct dirent * entry;
+    DIR * directory;
+    directory = opendir(dir);
+    if(directory){
 
-    entry = readdir(d);
-    
-    while (entry) {
-        if (entry->d_type == DT_DIR) {
-            dir_nums += 1;
-        }else{
-            files += 1;
-        }
-        entry = readdir(d);
-    }
-    prnt_dir(dir_nums, files, dir);
+           struct dirent * entry;
+           char * directories[100];
+           int numdirs = 0;
+           char * files [1000];
+           int numfiles = 0;
 
+           while ((entry = readdir(directory))){
+             if (entry -> d_type == DT_DIR){
+                 *(directories + numdirs) = entry-> d_name;
+                 numdirs++;
+             }
+             else {
+                 *(files + numfiles) = entry ->d_name;
+                 numfiles++;
+             }
+           }
+
+           int indexOfReigningChamp;
+
+           printf("==================DIRECTORIES====================\n");
+           for(int dirCount = 0; dirCount < numdirs; dirCount++){
+                 char reigningchamp[100] = "~~~~";
+                 for(int innerdirCount = 0; innerdirCount < numdirs; innerdirCount++){
+                    if(strcmp(*(directories + innerdirCount) , reigningchamp ) < 0) {
+                      strcpy(reigningchamp , *(directories + innerdirCount));
+                      indexOfReigningChamp = innerdirCount;
+                    }
+                 }
+                 strcpy(*(directories + indexOfReigningChamp), "~~~~");
+                 printf("%s\n", reigningchamp );
+           }
+           printf("\n==================FILES==========================\n");
+           for(int fileCount = 0; fileCount < numfiles; fileCount++){
+                 char reigningchamp[1000] ="~~~~";
+                 for(int innerfileCount = 0; innerfileCount < numfiles; innerfileCount++){
+                    if(strcmp(*(files + innerfileCount) , reigningchamp ) < 0) {
+                      strcpy(reigningchamp , *(files + innerfileCount));
+                      indexOfReigningChamp = innerfileCount;
+                    }
+                 }
+                 strcpy(*(files + indexOfReigningChamp), "~~~~");
+
+                 char tempFileName[100] = "";
+                 strcat(tempFileName , dir);
+                 strcat(tempFileName, "/");
+                 strcat(tempFileName, reigningchamp);
+
+                 stats(tempFileName);
+                 strcpy(tempFileName, "");
+           }
+      }
+    else{printf("Directory does not exist or cannot be opened.\n");}
     return 0;
 }
 
-
-
-
-
-
 int main() {
+  printf("\n\nPRINTING OUT CONTENTS FROM '../MKS65C-dirinfo'\n");
   char * dir_name = "../MKS65C-dirinfo";
   open_and_test(dir_name);
   return 0;
