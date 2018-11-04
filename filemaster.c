@@ -39,7 +39,7 @@ void stats (char * filename){
   mode = mode % 512;
 
 
-  const long int timeinsec = (s -> st_atime) - 14400;
+  const long int timeinsec = (s -> st_atime) - 18000;
   struct tm * realtime = gmtime(&timeinsec);
   char * dayofweek = malloc(10 * sizeof(char));
 
