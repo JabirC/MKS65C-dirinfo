@@ -62,9 +62,9 @@ int open_and_test(char * dir) {
     return 0;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   printf("\n\nPRINTING OUT CONTENTS FROM '../MKS65C-dirinfo'\n");
-  char * dir_name = "../MKS65C-dirinfo";
+  char * dir_name = argv[1];
   open_and_test(dir_name);
   return 0;
 }
