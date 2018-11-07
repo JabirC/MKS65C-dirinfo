@@ -9,4 +9,4 @@ dir.o: dir.c filemaster.h
 		gcc -c dir.c
 
 run:
-		./a.out
+		./a.out $(args)

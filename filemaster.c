@@ -24,16 +24,25 @@ char * permissions(int digit){
   return retval;
 }
 
+char * makeSizeReadable(unsigned int size, char * buffer){
+      int i = 0;
+      double doubleSize = size * 1.0;
+      const char* units[] = {"B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+      while (doubleSize >= 1024) {
+          doubleSize /= 1024;
+          i++;
+      }
+      sprintf(buffer, "%.*f%s", 1, doubleSize, units[i]);
+      return buffer;
+}
+
 void stats (char * filename){
   struct stat * s = malloc(sizeof(struct stat));
   stat(filename, s);
 
   unsigned int size = s -> st_size;
-  char sizestr[20];
-  if (size < 1024) sprintf(sizestr , "%dB" , size);
-  else if (size < 1024 * 1024) sprintf(sizestr , "%dKB" , size/1024);
-  else if (size < 1024 * 1024 * 1024) sprintf(sizestr, "%dMB" , size/(1024 * 1024));
-  else sprintf(sizestr , "%dGB" , size/(1024 * 1024 * 1024));
+  char strSize[10];
+  strcpy(strSize, makeSizeReadable(size, strSize));
 
   int mode = s -> st_mode;
   mode = mode % 512;
@@ -117,8 +126,9 @@ void stats (char * filename){
 
 
 
-  printf("-%s%s%s l ", firstperm, secondperm, thirdperm );
-  printf("%*s ",4,  sizestr); // "*" in between print types are for aligning the print results
+  printf("-%s%s%s 1 ", firstperm, secondperm, thirdperm );
+  printf("%*s ",8, strSize); // "*" in between print types are for aligning the print results
   printf("%*s %*s %*d %*s:%*s:%*s %*d %s\n", 4, dayofweek, 3, month, 2, dayofmonth, 2, hourstr, 2, minstr, 2, secstr, 4, year, strrchr(filename, 47) + 1);
 
+  free(s);
 }

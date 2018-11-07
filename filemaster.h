@@ -7,4 +7,5 @@
 #include <time.h>
 
 char * permissions(int digit);
-void stats (char * filename);
+char * makeSizeReadable(unsigned int size, char * buffer);
+void stats (char * filename); // Prints out File Info
